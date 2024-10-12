@@ -13,8 +13,8 @@ function App() {
         const newMessages = [...messages, { type: 'user', text: inputValue }];
 
         try {
-            const response = await axios.post('http://localhost:3000/api/process-input', {
-                text: inputValue,
+            const response = await axios.post('http://localhost:3002/chatbot/ask', {
+                message: inputValue,
             });
 
             const botMessage = { type: 'bot', text: response.data.text, isAnimating: true, id: Date.now() };
