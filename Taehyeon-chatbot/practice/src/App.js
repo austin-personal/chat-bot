@@ -16,8 +16,9 @@ function App() {
             const response = await axios.post('http://localhost:3002/chatbot/ask', {
                 message: inputValue,
             });
+            console.log(response.data.response.content[0].text);
 
-            const botMessage = { type: 'bot', text: response.data.text, isAnimating: true, id: Date.now() };
+            const botMessage = { type: 'bot', text: response.data.response.content[0].text, isAnimating: true, id: Date.now() };
             setMessages([...newMessages, botMessage]);
 
             setTimeout(() => {
