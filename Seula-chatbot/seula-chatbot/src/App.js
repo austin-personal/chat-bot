@@ -68,7 +68,7 @@ function App() {
   return (
     <div className="App flex flex-col w-screen h-screen bg-gray-100 p-5 px-10">
       <div className="grid grid-cols-[1.5fr_2.25fr] gap-2 w-full h-full">
-        <div className="chat-box p-2 grid grid-rows-[4fr_0.2fr] bg-white rounded-md overflow-y-auto">
+        <div className="chat-box p-2 grid grid-rows-[4fr_0.2fr] gap-2 bg-white rounded-md overflow-y-auto">
           <MessageList
             messages={messages}
             currentTypingId={currentTypingId}
