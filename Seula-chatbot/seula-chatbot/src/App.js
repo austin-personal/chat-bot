@@ -5,6 +5,7 @@ import axios from "axios"; //백엔드 연결 위함
 function App() {
   const [messages, setMessages] = useState([]); //모든 채팅 메시지를 저장
   const [currentTypingId, setCurrentTypingId] = useState(null); //현재 AI가 타이핑하는 메세지를 추적
+  const [ec2Messages, setEc2Messages] = useState([]);
   //사용자가 메세지를 보낼 때 호출되는 함수
   //메세지의 상태를 업데이트 하여 사용자의 메세지와 AI의 응답을 기존 메세지 목록에 추가.
   //isTyping: True => 타이핑 애니메이션 트리거
@@ -14,6 +15,12 @@ function App() {
 
     try {
       const newMessages = [...messages, { isUser: true, text: message }];
+      if (message.includes("생성해줘")) {
+        setEc2Messages((prevEc2Messages) => [
+          ...prevEc2Messages,
+          message.replace("생성해줘", "").trim(),
+        ]);
+      }
       const response = await axios.post("http://localhost:3002/chatbot/ask", {
         message: message,
       });
@@ -58,9 +65,9 @@ function App() {
   }, [messages, currentTypingId]);
 
   return (
-    <div className="App flex flex-col w-screen h-screen bg-gray-100 p-5">
-      <div className="grid grid-cols-2 gap-2 h-screen ">
-        <div className="chat-box bg-white rounded-md relative p-5">
+    <div className="App flex flex-col w-screen h-screen bg-gray-100 p-5 px-10">
+      <div className="grid grid-cols-[1.5fr_2.25fr] gap-2 w-full h-full">
+        <div className="chat-box bg-white rounded-md relative overflow-y-auto ">
           <MessageList
             messages={messages}
             currentTypingId={currentTypingId}
@@ -71,11 +78,40 @@ function App() {
             isTyping={currentTypingId !== null}
           />
         </div>
-        <div className="archi-box bg-white rounded-md">안녕</div>
+        <div className="archi-box rounded-md h-full flex flex-col  ">
+          <div className="text-left rounded-md h-1/6 mb-2 bg-white px-10 flex flex-col justify-center">
+            <p className="mb-2">ProjectName : Namanmu</p>
+            <div className="flex items-center">
+              <span className="mr-2">status :</span>
+              <span className="h-3.5 w-3.5 bg-[#ff605c] rounded-xl mr-1"></span>
+              <span>2</span>
+              <span className="h-3.5 w-3.5 bg-[#00ca4e] rounded-xl mr-1"></span>
+              <span>2</span>
+            </div>
+          </div>
+          <div className="rounded-md h-5/6 bg-white p-2">
+            <ul>
+              {ec2Messages.map((msg, index) => (
+                <li
+                  key={index}
+                  className="border-dashed border-2 size-48 rounded-lg"
+                >
+                  <img
+                    src="https://icon.icepanel.io/AWS/svg/Compute/EC2.svg"
+                    alt="AWS S3 Icon"
+                    className="rounded-md shadow-lg w-40 h-40"
+                  />
+                  {msg}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
 //채팅 메세지 목록 렌더링 컴포넌트 작성
 //메시지 배열과 현재 타이핑 중인 메시지의 id를 props로 전달받고 메시지 목록을 렌더링
 const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
@@ -85,7 +121,7 @@ const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
         <TypeAnimation
           key={message.id}
           sequence={[message.text, () => onEndTyping(message.id)]}
-          speed={50}
+          speed={50} // 1초 내에 완료되도록 속도 조절
           wrapper="div"
         >
           <div className={message.isUser ? "user-message" : "ai-message"}>
