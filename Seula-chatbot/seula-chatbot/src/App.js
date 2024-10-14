@@ -51,18 +51,20 @@ function App() {
   }, [messages, currentTypingId]);
 
   return (
-    <div className="App">
-      <h1>Chat App</h1>
-      <div className="chat-box">
-        <MessageList
-          messages={messages}
-          currentTypingId={currentTypingId}
-          onEndTyping={handleEndTyping}
-        />
-        <MessageForm
-          onSendMessage={handleSendMessage}
-          isTyping={currentTypingId !== null}
-        />
+    <div className="App flex flex-col w-screen h-screen bg-gray-100 p-5">
+      <div className="grid grid-cols-2 gap-2 h-screen ">
+        <div className="chat-box bg-white rounded-md relative p-5">
+          <MessageList
+            messages={messages}
+            currentTypingId={currentTypingId}
+            onEndTyping={handleEndTyping}
+          />
+          <MessageForm
+            onSendMessage={handleSendMessage}
+            isTyping={currentTypingId !== null}
+          />
+        </div>
+        <div className="archi-box bg-white rounded-md">안녕</div>
       </div>
     </div>
   );
@@ -70,14 +72,14 @@ function App() {
 //채팅 메세지 목록 렌더링 컴포넌트 작성
 //메시지 배열과 현재 타이핑 중인 메시지의 id를 props로 전달받고 메시지 목록을 렌더링
 const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
-  <div className="messages-list">
+  <div className="messages-list items-center mx-2">
     {messages.map((message) =>
       message.isTyping && message.id === currentTypingId ? (
         <TypeAnimation
           key={message.id}
           sequence={[message.text, () => onEndTyping(message.id)]}
           speed={50}
-          wrapper="span"
+          wrapper="div"
         >
           <div className={message.isUser ? "user-message" : "ai-message"}>
             {message.text}
@@ -106,18 +108,23 @@ const MessageForm = ({ onSendMessage, isTyping }) => {
     setMessage(""); //메세지 입력 필드 초기화
   };
   return (
-    <form className="message-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        className="message-input"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        disabled={isTyping}
-      />
-      <button className="send-button" type="submit">
-        Send
-      </button>
-    </form>
+    <div class="flex absolute border rounded-lg p-2 w-full bottom-2 left-0">
+      <form className="message-form w-full" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="w-full py-2 border-none focus:outline-none text-gray-700 message-input"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          disabled={isTyping}
+        />
+        <button
+          className="absolute bg-blue-500  hover:bg-blue-600 text-white px-4 py-2 rounded-lg focus:outline-none send-button right-2"
+          type="submit"
+        >
+          Send
+        </button>
+      </form>
+    </div>
   );
 };
 
