@@ -5,6 +5,8 @@ import os
 from dotenv import load_dotenv
 
 client = boto3.client('bedrock-runtime', region_name='ap-northeast-2')
+#인코딩 문제 해결
+sys.stdout.reconfigure(encoding='utf-8') 
 
 # 입력으로 받은 요청 데이터
 request_body = sys.argv[1]
