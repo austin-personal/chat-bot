@@ -1,0 +1,12 @@
+.testBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 400px;
+    height: 600px;
+    border: 1px solid #ddd;
+    margin: 50px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+  }
