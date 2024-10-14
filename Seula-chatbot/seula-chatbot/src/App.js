@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TypeAnimation } from "react-type-animation";
 import "./App.css";
-
+import axios from "axios"; //백엔드 연결 위함
 function App() {
   const [messages, setMessages] = useState([]); //모든 채팅 메시지를 저장
   const [currentTypingId, setCurrentTypingId] = useState(null); //현재 AI가 타이핑하는 메세지를 추적
@@ -9,17 +9,24 @@ function App() {
   //메세지의 상태를 업데이트 하여 사용자의 메세지와 AI의 응답을 기존 메세지 목록에 추가.
   //isTyping: True => 타이핑 애니메이션 트리거
   //message 인자는 사용자가 채팅 창에 입력한 텍스트
-  const handleSendMessage = (message) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: message, isUser: true },
-      {
-        text: `my answer is "${message}"`,
+  const handleSendMessage = async (message) => {
+    console.log(message);
+
+    try {
+      const newMessages = [...messages, { isUser: true, text: message }];
+      const response = await axios.post("http://localhost:3002/chatbot/ask", {
+        message: message,
+      });
+      const botMessage = {
         isUser: false,
+        text: response.data.response.content[0].text,
         isTyping: true,
         id: Date.now(),
-      },
-    ]);
+      };
+      setMessages([...newMessages, botMessage]);
+    } catch (error) {
+      console.error("비상!! : ", error);
+    }
   };
   //AI 메시지 타이핑 종료 시 handleEndTyping 호출
   //인자 id: 타이핑이 종료된 메시지의 ID
@@ -100,9 +107,8 @@ const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
 const MessageForm = ({ onSendMessage, isTyping }) => {
   const [message, setMessage] = useState(""); //사용자 입력 상태 관리
   //사용자가 전송버튼 또는 엔터를 누를 때 실행
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); //기본 제출 동작의 새로고침 방지
-
     onSendMessage(message); //메세지 보내기
 
     setMessage(""); //메세지 입력 필드 초기화
