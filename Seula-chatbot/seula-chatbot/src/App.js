@@ -15,12 +15,7 @@ function App() {
 
     try {
       const newMessages = [...messages, { isUser: true, text: message }];
-      if (message.includes("생성해줘")) {
-        setEc2Messages((prevEc2Messages) => [
-          ...prevEc2Messages,
-          message.replace("생성해줘", "").trim(),
-        ]);
-      }
+
       const response = await axios.post("http://localhost:3002/chatbot/ask", {
         message: message,
       });
@@ -31,6 +26,12 @@ function App() {
         id: Date.now(),
       };
       setMessages([...newMessages, botMessage]);
+      if (message.includes("로 생성해줘")) {
+        setEc2Messages((prevEc2Messages) => [
+          ...prevEc2Messages,
+          message.replace("로 생성해줘", "").trim(),
+        ]);
+      }
     } catch (error) {
       console.error("비상!! : ", error);
     }
@@ -67,7 +68,7 @@ function App() {
   return (
     <div className="App flex flex-col w-screen h-screen bg-gray-100 p-5 px-10">
       <div className="grid grid-cols-[1.5fr_2.25fr] gap-2 w-full h-full">
-        <div className="chat-box bg-white rounded-md relative overflow-y-auto ">
+        <div className="chat-box p-2 grid grid-rows-[4fr_0.2fr] bg-white rounded-md overflow-y-auto">
           <MessageList
             messages={messages}
             currentTypingId={currentTypingId}
@@ -94,14 +95,14 @@ function App() {
               {ec2Messages.map((msg, index) => (
                 <li
                   key={index}
-                  className="border-dashed border-2 size-48 rounded-lg"
+                  className="border-dashed border-2 size-48 rounded-lg flex justify-center items-center"
                 >
                   <img
                     src="https://icon.icepanel.io/AWS/svg/Compute/EC2.svg"
                     alt="AWS S3 Icon"
                     className="rounded-md shadow-lg w-40 h-40"
                   />
-                  {msg}
+                  {/* {msg} */}
                 </li>
               ))}
             </ul>
@@ -121,7 +122,7 @@ const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
         <TypeAnimation
           key={message.id}
           sequence={[message.text, () => onEndTyping(message.id)]}
-          speed={50} // 1초 내에 완료되도록 속도 조절
+          speed={100}
           wrapper="div"
         >
           <div className={message.isUser ? "user-message" : "ai-message"}>
@@ -150,17 +151,17 @@ const MessageForm = ({ onSendMessage, isTyping }) => {
     setMessage(""); //메세지 입력 필드 초기화
   };
   return (
-    <div class="flex absolute border rounded-lg p-2 w-full bottom-2 left-0">
-      <form className="message-form w-full" onSubmit={handleSubmit}>
+    <div class="border rounded-lg bottom-2 p-2 mx-auto">
+      <form className="message-form" onSubmit={handleSubmit}>
         <input
           type="text"
-          className="w-full py-2 border-none focus:outline-none text-gray-700 message-input"
+          className=" py-2 border-none focus:outline-none text-gray-700 message-input"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           disabled={isTyping}
         />
         <button
-          className="absolute bg-blue-500  hover:bg-blue-600 text-white px-4 py-2 rounded-lg focus:outline-none send-button right-2"
+          className=" bg-blue-500  hover:bg-blue-600 text-white px-4 py-2 rounded-lg focus:outline-none send-button"
           type="submit"
         >
           Send
