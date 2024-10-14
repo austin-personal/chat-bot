@@ -1,11 +1,22 @@
 import boto3
 import json
 import sys
+import os
+from dotenv import load_dotenv
 
 client = boto3.client('bedrock-runtime', region_name='ap-northeast-2')
 
 # 입력으로 받은 요청 데이터
 request_body = sys.argv[1]
+# .env 파일에서 환경 변수를 로드
+load_dotenv()
+
+client = boto3.client(
+    'bedrock-runtime',
+    region_name=os.getenv('AWS_REGION'),
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+)
 
 try:
     # 모델 호출
