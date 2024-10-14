@@ -1,11 +1,11 @@
 import './Chatbot.css';
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
-import { TypeAnimation } from 'react-type-animation';
 
 function Chatbot({ onNewMessage }) {
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState([]);
+    const chatBoxRef = useRef(null);
 
     // 임시 테스트
     function hardCordingSentence (text) {
@@ -22,7 +22,9 @@ function Chatbot({ onNewMessage }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const userMessage = { type: 'user', text: inputValue, id: Date.now() };
+        if (inputValue.trim() === '') return; // 빈 메시지는 무시
+
+        const userMessage = { type: 'user', text: inputValue, id: Date.now(), show: true };
         const newMessages = [...messages, userMessage];
 
         try {
@@ -34,7 +36,7 @@ function Chatbot({ onNewMessage }) {
             const botMessage = {
                 type: 'bot',
                 text: botText,
-                isAnimating: true,
+                show: false,
                 id: Date.now(),
             };
 
@@ -48,35 +50,33 @@ function Chatbot({ onNewMessage }) {
             setTimeout(() => {
                 setMessages((prevMessages) =>
                     prevMessages.map((msg) =>
-                        msg.id === botMessage.id ? { ...msg, isAnimating: false } : msg
+                        msg.id === botMessage.id ? { ...msg, show: true } : msg
                     )
                 );
-            }, botText.length * 50);
+            }, 500);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('비상!!! : ', error);
         }
 
         setInputValue('');
     };
 
-    const isAnimating = messages.some((msg) => msg.isAnimating);
+    // 스크롤을 맨 아래로 자동 이동
+    useEffect(() => {
+        if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     return (
         <div className="chatContainer">
-            <div className="chatBox">
+            <div className="chatBox" ref={chatBoxRef}>
                 {messages.map((msg, index) => (
-                    <div key={index} className={`chatMessage ${msg.type}`}>
-                        {msg.isAnimating ? (
-                            <TypeAnimation
-                                sequence={[msg.text]}
-                                speed={50}
-                                wrapper="span"
-                                cursor={true}
-                                repeat={0}
-                            />
-                        ) : (
-                            msg.text
-                        )}
+                    <div
+                        key={index}
+                        className={`chatMessage ${msg.type} ${msg.show ? 'show' : ''}`}
+                    >
+                        {msg.text}
                     </div>
                 ))}
             </div>
@@ -86,11 +86,8 @@ function Chatbot({ onNewMessage }) {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Enter your message"
-                    disabled={isAnimating}
                 />
-                <button type="submit" disabled={isAnimating}>
-                    Send
-                </button>
+                <button type="submit">Send</button>
             </form>
         </div>
     );

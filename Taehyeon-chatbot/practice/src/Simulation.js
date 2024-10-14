@@ -19,8 +19,8 @@ function Simulation({ messages }) {
     return (
         <div className="simulationContainer">
             <div className="statusBox">
-                <div className='statusBoxContent'>project name : abc</div>
-                <div className='statusBoxContent'>status</div>
+                <div className='statusBoxContent'>project name : NaManMoo</div>
+                <div className='statusBoxContent'>status 🔴 🟢</div>
             </div>
             <div className="testBox">
                 {messages.map((text, index) => (
