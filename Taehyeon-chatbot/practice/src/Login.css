@@ -1,0 +1,81 @@
+/* 전체 화면을 채우는 컨테이너 */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000; /* 검은색 배경 */
+}
+
+/* 로그인 폼 */
+.login-form {
+    width: 300px;
+    padding: 30px;
+    background-color: #1c1c1e; /* 어두운 회색 배경 */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+/* 제목 */
+.login-title {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* 입력 그룹 */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    outline: none;
+}
+
+/* 개선된 로그인 버튼 */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #555, #333); /* 그라데이션 */
+    border: none;
+    border-radius: 50px; /* 둥근 모서리 */
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.4s, transform 0.2s;
+}
+
+/* 버튼 호버 및 클릭 효과 */
+.login-button:hover {
+    background: linear-gradient(135deg, #666, #444); /* 살짝 밝아지는 효과 */
+    transform: translateY(-2px); /* 부드럽게 위로 올라감 */
+}
+
+.login-button:active {
+    transform: translateY(0); /* 클릭 시 원래 위치로 */
+}
+
+/* 회원가입 텍스트 */
+.signup-text {
+    margin-top: 10px;
+    color: #bbb;
+}
+
+.signup-text a {
+    color: #bbb;
+    text-decoration: none;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+}
