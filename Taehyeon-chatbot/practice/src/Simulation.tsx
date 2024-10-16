@@ -1,41 +1,51 @@
 import React from 'react';
-import './Simulation.css';
-
-interface ImageRendererProps {
-    text: string;
-    index: number;
-}
-
-// 이미지 매핑 객체
-const imageMapping: Record<string, string> = {
-    ec2: 'https://icon.icepanel.io/AWS/svg/Compute/EC2.svg',
-    rds: 'https://icon.icepanel.io/AWS/svg/Database/RDS.svg',
-};
-
-// 이미지 컴포넌트
-const ImageRenderer: React.FC<ImageRendererProps> = ({ text, index }) => {
-    const imgSrc = imageMapping[text];
-    if (!imgSrc) return null; // 이미지가 없으면 아무것도 렌더링하지 않음
-
-    return <img key={index} className="img" src={imgSrc} alt={`${text} Instance`} />;
-}
+import './css/Simulation.css';
+import ReactFlow, { Node, NodeProps, Controls } from 'react-flow-renderer';
+import 'react-flow-renderer/dist/style.css';
 
 interface SimulationProps {
-    messages: string[];
+  messages: string[];
 }
 
-const Simulation: React.FC<SimulationProps> = ({ messages }) => (
+const imageMapping: Record<string, string> = {
+  ec2: 'https://icon.icepanel.io/AWS/svg/Compute/EC2.svg',
+  rds: 'https://icon.icepanel.io/AWS/svg/Database/RDS.svg',
+};
+
+const ImageNode: React.FC<NodeProps> = ({ data }) => (
+  <div className="customNode">
+    <img className="img" src={data.imgSrc} alt={data.label} />
+  </div>
+);
+
+const createNodesFromMessages = (messages: string[]): Node[] =>
+  messages.map((message, index) => ({
+    id: `node-${index}`,
+    type: 'imageNode',
+    data: { label: `${message} Instance`, imgSrc: imageMapping[message] || '' },
+    position: { x: 100 * index, y: 50 },
+  }));
+
+const Simulation: React.FC<SimulationProps> = ({ messages }) => {
+  const nodes = createNodesFromMessages(messages);
+
+  const nodeTypes = {
+    imageNode: ImageNode,
+  };
+
+  return (
     <div className="simulationContainer">
-        <div className="statusBox">
-            <div className='statusBoxContent'>project name : NaManMoo</div>
-            <div className='statusBoxContent'>status 🔴 🟢</div>
-        </div>
-        <div className="testBox">
-            {messages.map((text, index) => (
-                <ImageRenderer key={index} text={text} index={index} />
-            ))}
-        </div>
+      <div className="statusBox">
+        <div className="statusBoxContent">project name : NaManMoo</div>
+        <div className="statusBoxContent">status 🔴 🟢</div>
+      </div>
+      <div className="testBox">
+        <ReactFlow nodes={nodes} nodeTypes={nodeTypes}>
+          <Controls />
+        </ReactFlow>
+      </div>
     </div>
-)
+  );
+};
 
 export default Simulation;

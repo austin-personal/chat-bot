@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 400px;
-  height: 600px;
+  width: 30%;
+  height: 80%;
   border: 1px solid #444;
   margin: 50px 0;
   border-radius: 10px;
@@ -28,7 +28,7 @@
   padding: 10px;
   border-radius: 15px;
   max-width: 70%;
-  font-size: 14px;
+  font-size: 25px;
   word-wrap: break-word;
 }
 
@@ -64,11 +64,12 @@
   margin-right: 10px;
   background-color: #333;
   color: white;
-  font-size: 14px;
+  font-size: 25px;
   outline: none;
 }
 
 .chatInput button {
+  font-size: 25px;
   padding: 10px 20px;
   background: linear-gradient(135deg, #555, #333);
   border: none;

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Header';
 import Login from './Login';
 import Body from './Body';
-import './App.css';
+import './css/App.css';
 
 const App: React.FC = () => (
     <Router>

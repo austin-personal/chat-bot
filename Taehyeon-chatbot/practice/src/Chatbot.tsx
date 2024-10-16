@@ -1,11 +1,16 @@
-import './Chatbot.css';
+import './css/Chatbot.css';
 import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
 
+// 챗봇프롭 타입 선언
 interface ChatbotProps {
     onNewMessage: (message: string) => void;
 }
 
+// 허용된 메시지 리스트
+const allowedMessages = ['ec2', 'rds'];
+
+// 메세지 타입 선언
 interface Message {
     type: 'user' | 'bot';
     text: string;
@@ -38,7 +43,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ onNewMessage }) => {
 
             // 파싱 임시 테스트 //
             const hardCordingText = hardCordingSentence(inputValue);
-            onNewMessage(hardCordingText);
+            if (allowedMessages.includes(hardCordingText)) {
+                onNewMessage(hardCordingText);
+            }
 
             setTimeout(() => {
                 setMessages((prevMessages) =>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Chatbot from './Chatbot';
 import Simulation from './Simulation';
-import './App.css';
+import './css/Body.css';
 
 const Body: React.FC = () => {
     const [messages, setMessages] = useState<string[]>([]);
