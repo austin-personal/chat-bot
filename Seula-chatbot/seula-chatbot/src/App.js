@@ -158,26 +158,17 @@ const MessageForm = ({ onSendMessage, isTyping, showNodeById }) => {
     }
     onSendMessage(message); //메세지 보내기
     setMessage(""); //메세지 입력 필드 초기화
-    // if (showNodeById) {
-    //   if (message.includes("ec2")) {
-    //     showNodeById("1");
-    //   }
-    //   if (message.includes("rds")) {
-    //     showNodeById("2");
-    //   }
-    //   // 입력에 'EC2'가 포함되어 있으면 id가 1인 노드를 표시
-    //   console.log(message);
-    // }
   };
   return (
-    <div class="border rounded-lg bottom-2 p-2 mx-auto">
-      <form className="message-form" onSubmit={handleSubmit}>
+    <div class="border rounded-lg bottom-2 p-2">
+      <form className="message-form flex items-center" onSubmit={handleSubmit}>
         <input
           type="text"
-          className=" py-2 border-none focus:outline-none text-gray-700 message-input"
+          className=" py-2 border-none w-full focus:outline-none text-gray-700 message-input"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           disabled={isTyping}
+          placeholder="Enter your message..."
         />
         <button
           className=" bg-blue-500  hover:bg-blue-600 text-white px-4 py-2 rounded-lg focus:outline-none send-button"
