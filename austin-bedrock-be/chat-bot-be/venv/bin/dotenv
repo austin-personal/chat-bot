@@ -1,0 +1,8 @@
+#!/Users/austin/Documents/Study/Projects/CHAT-BOT-나만무/chat-bot/austin-bedrock-be/chat-bot-be/venv/bin/python3
+# -*- coding: utf-8 -*-
+import re
+import sys
+from dotenv.__main__ import cli
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(cli())

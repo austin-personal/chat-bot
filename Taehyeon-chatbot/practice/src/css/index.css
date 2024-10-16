@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #000;
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
