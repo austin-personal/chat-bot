@@ -1,3 +1,4 @@
+
 <#
 .Synopsis
 Activate a Python virtual environment for the current PowerShell session.
@@ -239,3 +240,4 @@ if (Test-Path -Path Env:PYTHONHOME) {
 # Add the venv to the PATH
 Copy-Item -Path Env:PATH -Destination Env:_OLD_VIRTUAL_PATH
 $Env:PATH = "$VenvExecDir$([System.IO.Path]::PathSeparator)$Env:PATH"
+
