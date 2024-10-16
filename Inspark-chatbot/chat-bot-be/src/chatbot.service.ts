@@ -3,44 +3,52 @@ import { PythonShell } from 'python-shell';
 
 @Injectable()
 export class ChatbotService {
-  async askBedrockModel(message: string): Promise<any> {
+  private conversationHistory: { role: string; content: string }[] = [];
 
-    const requestBody = JSON.stringify({
-      "max_tokens": 1000,
-      "anthropic_version": "bedrock-2023-05-31",
-      "messages": [
-        {
-          "role": "user",
-          "content": message,
-        },
-      ],
+  async askBedrockModel(message: string): Promise<any> {
+    // 사용자 메시지를 대화 내역에 추가합니다.
+    this.conversationHistory.push({
+      role: 'user',
+      content: message,
     });
 
-    console.log(requestBody); // {"max_tokens":1000,"anthropic_version":"bedrock-2023-05-31","messages":[{"role":"user","content":"안녕 챗봇"}]}
+    const requestBody = JSON.stringify({
+      max_tokens: 1000,
+      anthropic_version: 'bedrock-2023-05-31',
+      messages: this.conversationHistory,
+    });
+
+    console.log(requestBody)
 
     const options = {
       args: [requestBody],
     };
 
-    return PythonShell.run('bedrock.py', options).then(messages => {
-      console.log('Python script finished');
-      console.log('Python response:', messages); // Python 스크립트의 전체 출력을 배열로 출력
+    return PythonShell.run('bedrock.py', options)
+      .then((messages) => {
+        console.log('Python script finished');
+        console.log('Python response:', messages);
 
-      // messages 배열을 하나의 문자열로 결합 (줄 단위로 된 메시지들을 합침)
-      const responseString = messages.join('');
+        const responseString = messages.join('');
 
-      // 결합한 문자열을 JSON으로 파싱
-      try {
-        const parsedMessage = JSON.parse(responseString); // JSON 파싱
-        return parsedMessage;
-      } catch (error) {
-        console.error('Error parsing Python response:', error);
-        return { error: 'Invalid JSON response', raw: responseString }; // 파싱 실패 시 원본 반환
-      }
-    }).catch(err => {
-      console.error('Error executing Python script:', err);
-      throw err;
-    });
+        try {
+          const parsedMessage = JSON.parse(responseString);
+
+          // 챗봇의 응답을 대화 내역에 추가합니다.
+          this.conversationHistory.push({
+            role: 'assistant',
+            content: parsedMessage.content,
+          });
+
+          return parsedMessage;
+        } catch (error) {
+          console.error('Error parsing Python response:', error);
+          return { error: 'Invalid JSON response', raw: responseString };
+        }
+      })
+      .catch((err) => {
+        console.error('Error executing Python script:', err);
+        throw err;
+      });
   }
 }
-// 김탷련
