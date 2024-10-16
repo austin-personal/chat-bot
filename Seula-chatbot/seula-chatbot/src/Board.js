@@ -11,7 +11,10 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import { nodes as initialNodes, edges as initialEdges } from "./Elements";
-//커스텀 노드 정의 (이미지 포함 노드)
+//text만 있는 노드
+const TextNode = ({ data }) => {
+  return <div>{data.label}</div>;
+}; //커스텀 노드 정의 (이미지 포함 노드)
 const ImageNode = ({ data }) => {
   return (
     <div>
@@ -23,6 +26,7 @@ const ImageNode = ({ data }) => {
 };
 const nodeTypes = {
   imageNode: ImageNode, //커스텀 노드 등록
+  textNode: TextNode,
 };
 export default function Board({ onShowNode }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
