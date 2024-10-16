@@ -1,11 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { TypeAnimation } from "react-type-animation";
 import "./App.css";
 import axios from "axios"; //백엔드 연결 위함
+
+import Board from "./Board";
+//전역함수
+let shouldShowEC2Node = false; // EC2 플래그
+let shouldShowRDSNode = false; // RDS 플래그
 function App() {
+  const [showNodeById, setShowNodeById] = useState(null);
+
+  // useCallback으로 onShowNode 메모이제이션
+  const handleShowNodeById = useCallback((showNodeByIdFn) => {
+    setShowNodeById(() => showNodeByIdFn);
+  }, []);
+
   const [messages, setMessages] = useState([]); //모든 채팅 메시지를 저장
   const [currentTypingId, setCurrentTypingId] = useState(null); //현재 AI가 타이핑하는 메세지를 추적
-  const [ec2Messages, setEc2Messages] = useState([]);
+  // const [ec2Messages, setEc2Messages] = useState([]); //시연용
   //사용자가 메세지를 보낼 때 호출되는 함수
   //메세지의 상태를 업데이트 하여 사용자의 메세지와 AI의 응답을 기존 메세지 목록에 추가.
   //isTyping: True => 타이핑 애니메이션 트리거
@@ -26,12 +38,6 @@ function App() {
         id: Date.now(),
       };
       setMessages([...newMessages, botMessage]);
-      if (message.includes("로 생성해줘")) {
-        setEc2Messages((prevEc2Messages) => [
-          ...prevEc2Messages,
-          message.replace("로 생성해줘", "").trim(),
-        ]);
-      }
     } catch (error) {
       console.error("비상!! : ", error);
     }
@@ -47,6 +53,16 @@ function App() {
     );
     //현재 타이핑 중인 메시지가 없음을 업데이트
     setCurrentTypingId(null);
+    // 타이핑이 종료되고 플래그가 true일 경우 노드 표시
+    if (shouldShowEC2Node) {
+      console.log("ec222");
+      showNodeById("1"); // 노드 표시 (EC2 노드)
+      shouldShowEC2Node = false;
+    }
+    if (shouldShowRDSNode) {
+      showNodeById("2"); // 노드 표시 (EC2 노드)
+      shouldShowRDSNode = false;
+    }
   };
   //useEffect :  messages 또는 currentTypingId가 변경될 때마다 실행
   useEffect(() => {
@@ -77,6 +93,7 @@ function App() {
           <MessageForm
             onSendMessage={handleSendMessage}
             isTyping={currentTypingId !== null}
+            showNodeById={showNodeById} // Board에서 받은 함수 전달
           />
         </div>
         <div className="archi-box rounded-md h-full flex flex-col  ">
@@ -91,21 +108,7 @@ function App() {
             </div>
           </div>
           <div className="rounded-md h-5/6 bg-white p-2">
-            <ul>
-              {ec2Messages.map((msg, index) => (
-                <li
-                  key={index}
-                  className="border-dashed border-2 size-48 rounded-lg flex justify-center items-center"
-                >
-                  <img
-                    src="https://icon.icepanel.io/AWS/svg/Compute/EC2.svg"
-                    alt="AWS S3 Icon"
-                    className="rounded-md shadow-lg w-40 h-40"
-                  />
-                  {/* {msg} */}
-                </li>
-              ))}
-            </ul>
+            <Board onShowNode={handleShowNodeById} />
           </div>
         </div>
       </div>
@@ -141,14 +144,30 @@ const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
   </div>
 );
 
-const MessageForm = ({ onSendMessage, isTyping }) => {
+const MessageForm = ({ onSendMessage, isTyping, showNodeById }) => {
   const [message, setMessage] = useState(""); //사용자 입력 상태 관리
   //사용자가 전송버튼 또는 엔터를 누를 때 실행
   const handleSubmit = async (event) => {
     event.preventDefault(); //기본 제출 동작의 새로고침 방지
+    // 메시지에 "EC2"가 포함되어 있으면 플래그를 true로 설정
+    if (message.includes("ec2")) {
+      shouldShowEC2Node = true;
+    }
+    if (message.includes("rds")) {
+      shouldShowRDSNode = true;
+    }
     onSendMessage(message); //메세지 보내기
-
     setMessage(""); //메세지 입력 필드 초기화
+    // if (showNodeById) {
+    //   if (message.includes("ec2")) {
+    //     showNodeById("1");
+    //   }
+    //   if (message.includes("rds")) {
+    //     showNodeById("2");
+    //   }
+    //   // 입력에 'EC2'가 포함되어 있으면 id가 1인 노드를 표시
+    //   console.log(message);
+    // }
   };
   return (
     <div class="border rounded-lg bottom-2 p-2 mx-auto">
