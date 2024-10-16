@@ -48,7 +48,7 @@ export default function Board({ onShowNode }) {
     if (onShowNode) {
       onShowNode(showNodeById); // 부모에게 showNodeById 전달
     }
-  }, []); // showNodeById를 의존성 배열에 추가
+  }, [onShowNode, showNodeById]); // showNodeById를 의존성 배열에 추가
 
   return (
     //너비와 높이가 있는 element로 무조건 감싸야 함! 상위에서 감싸고 있음!
