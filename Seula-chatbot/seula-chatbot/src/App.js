@@ -128,16 +128,19 @@ const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
           speed={100}
           wrapper="div"
         >
-          <div className={message.isUser ? "user-message" : "ai-message"}>
-            {message.text}
-          </div>
+          {/* <div className={message.isUser ? "user-message" : "ai-message"}></div> */}
         </TypeAnimation>
       ) : (
         <div
           key={message.id}
           className={message.isUser ? "user-message" : "ai-message"}
         >
-          {message.text}
+          {message.text.split("\n").map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
         </div>
       )
     )}
