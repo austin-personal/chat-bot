@@ -61,7 +61,8 @@ export default function Board({ onShowNode }) {
       fitView
     >
       <Controls />
-      <MiniMap />
+      {/* 시연때 거슬려서 제외 */}
+      {/* <MiniMap /> */}
       <Background variant="dots" gap={12} size={1} />
     </ReactFlow>
   );
