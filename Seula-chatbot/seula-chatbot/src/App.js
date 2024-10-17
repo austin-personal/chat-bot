@@ -23,11 +23,19 @@ function App() {
   //isTyping: True => 타이핑 애니메이션 트리거
   //message 인자는 사용자가 채팅 창에 입력한 텍스트
   const handleSendMessage = async (message) => {
+    const newMessages = [...messages, { isUser: true, text: message }];
+    setMessages(newMessages);
+    // 'AI 응답 중..' 메시지 추가
+    const typingMessage = {
+      isUser: false,
+      text: <div className="loader"></div>,
+      isTyping: true,
+      id: Date.now(),
+    };
+    setMessages((prevMessages) => [...prevMessages, typingMessage]);
     console.log(message);
 
     try {
-      const newMessages = [...messages, { isUser: true, text: message }];
-
       const response = await axios.post("http://localhost:3002/chatbot/ask", {
         message: message,
       });
@@ -37,7 +45,10 @@ function App() {
         isTyping: true,
         id: Date.now(),
       };
-      setMessages([...newMessages, botMessage]);
+      setMessages((prevMessages) => [
+        ...prevMessages.filter((msg) => msg.id !== typingMessage.id),
+        botMessage,
+      ]);
     } catch (error) {
       console.error("비상!! : ", error);
     }
@@ -133,14 +144,20 @@ const MessageList = ({ messages, currentTypingId, onEndTyping }) => (
       ) : (
         <div
           key={message.id}
-          className={message.isUser ? "user-message" : "ai-message"}
+          className={
+            message.isUser ? "user-message" : "ai-message flex justify-center"
+          }
         >
-          {message.text.split("\n").map((line, index) => (
-            <React.Fragment key={index}>
-              {line}
-              <br />
-            </React.Fragment>
-          ))}
+          {message.isUser
+            ? message.text
+            : typeof message.text === "string"
+            ? message.text.split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))
+            : message.text}
         </div>
       )
     )}
