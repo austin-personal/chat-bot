@@ -3,7 +3,7 @@ import json
 import sys
 import os
 import chromadb
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 from chromadb.config import Settings
 
@@ -11,7 +11,7 @@ client = boto3.client('bedrock-runtime', region_name='ap-northeast-2')
 #인코딩 문제 해결
 sys.stdout.reconfigure(encoding='utf-8')
 
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+# embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 chroma_client = chromadb.Client()
 # collection = client.get_collection(name="my_collection")
 # persist_directory = "./chroma"  # 디렉토리 설정
@@ -30,7 +30,7 @@ parsed_json = json.loads(request_body)
 user_question = parsed_json['messages'][0]['content']
 
 # 크로마db 서칭
-question_embedding = embedding_model.encode(user_question).tolist()
+# question_embedding = embedding_model.encode(user_question).tolist()
 n_results = 10
 # results = collection.query(
 #     query_embeddings=[question_embedding],

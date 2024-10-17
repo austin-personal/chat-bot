@@ -28,6 +28,16 @@ const Chatbot: React.FC<ChatbotProps> = ({ onNewMessage }) => {
         ? text.slice(0, -6).trim()
         : '';
 
+    // 줄바꿈을 <br /> 태그로 변환하는 함수
+    const formatTextWithLineBreaks = (text: string) => {
+        return text.split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+                {line}
+                <br />
+            </React.Fragment>
+        ));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputValue.trim()) return;
@@ -71,7 +81,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onNewMessage }) => {
             <div className="chatBox" ref={chatBoxRef}>
                 {messages.map((msg, index) => (
                     <div key={index} className={`chatMessage ${msg.type} ${msg.show ? 'show' : ''}`}>
-                        {msg.text}
+                        {msg.type === 'bot' ? formatTextWithLineBreaks(msg.text) : msg.text}
                     </div>
                 ))}
             </div>
